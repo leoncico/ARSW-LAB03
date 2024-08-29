@@ -7,6 +7,8 @@ package edu.eci.arst.concprg.prodcons;
 
 import java.util.Queue;
 import java.util.Random;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -16,14 +18,14 @@ import java.util.logging.Logger;
  */
 public class Producer extends Thread {
 
-    private Queue<Integer> queue = null;
+    private LinkedBlockingQueue<Integer> queue = null;
 
     private int dataSeed = 0;
     private Random rand=null;
     private final long stockLimit;
     private Object lock;
 
-    public Producer(Queue<Integer> queue,long stockLimit, Object lock) {
+    public Producer(LinkedBlockingQueue<Integer> queue,int stockLimit, Object lock) {
         this.queue = queue;
         rand = new Random(System.currentTimeMillis());
         this.stockLimit=stockLimit;
@@ -37,17 +39,22 @@ public class Producer extends Thread {
             dataSeed = dataSeed + rand.nextInt(100);
             System.out.println("Producer added " + dataSeed);
             synchronized(lock){
-                lock.notifyAll();
-                queue.add(dataSeed);
+                //lock.notifyAll();
+                try {
+                    queue.put(dataSeed);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
             
-            //System.out.println(queue.toString());
+            System.out.println(queue.toString());
 
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(Producer.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            // try {
+            //     Thread.sleep(1000);
+            // } catch (InterruptedException ex) {
+            //     Logger.getLogger(Producer.class.getName()).log(Level.SEVERE, null, ex);
+            // }
 
 
         }

@@ -6,6 +6,8 @@
 package edu.eci.arst.concprg.prodcons;
 
 import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  *
@@ -13,12 +15,12 @@ import java.util.Queue;
  */
 public class Consumer extends Thread{
     
-    private Queue<Integer> queue;
+    private LinkedBlockingQueue<Integer> queue;
     private Object lock;
     private int elem;
     
     
-    public Consumer(Queue<Integer> queue, Object lock){
+    public Consumer(LinkedBlockingQueue<Integer> queue, Object lock){
         this.queue=queue;
         this.lock = lock;        
     }
@@ -27,20 +29,26 @@ public class Consumer extends Thread{
     public void run() {
         while (true) {
 
-            if (queue.isEmpty()) {
-                try {
-                    synchronized(lock){
-                        lock.wait();
-                    }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            // if (queue.isEmpty()) {
+            //     try {
+            //         synchronized(lock){
+            //             lock.wait();
+            //         }
+            //     } catch (InterruptedException e) {
+            //         e.printStackTrace();
+            //     }
                                             
-            }
-            
-            synchronized(lock){
+            // }
+            System.out.println("Consumer consumes "+elem);  
+            //synchronized(lock){
                 elem=queue.poll();
-            }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }      
+            //}
             System.out.println("Consumer consumes "+elem);    
         }
     }
