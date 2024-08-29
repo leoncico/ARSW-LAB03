@@ -15,6 +15,8 @@ public class Consumer extends Thread{
     
     private Queue<Integer> queue;
     private Object lock;
+    private int elem;
+    
     
     public Consumer(Queue<Integer> queue, Object lock){
         this.queue=queue;
@@ -36,8 +38,10 @@ public class Consumer extends Thread{
                                             
             }
             
-            int elem=queue.poll();
-            //System.out.println("Consumer consumes "+elem);    
+            synchronized(lock){
+                elem=queue.poll();
+            }
+            System.out.println("Consumer consumes "+elem);    
         }
     }
 }
