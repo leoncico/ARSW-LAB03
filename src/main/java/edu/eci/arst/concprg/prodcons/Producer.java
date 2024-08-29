@@ -21,11 +21,13 @@ public class Producer extends Thread {
     private int dataSeed = 0;
     private Random rand=null;
     private final long stockLimit;
+    private Object lock;
 
-    public Producer(Queue<Integer> queue,long stockLimit) {
+    public Producer(Queue<Integer> queue,long stockLimit, Object lock) {
         this.queue = queue;
         rand = new Random(System.currentTimeMillis());
         this.stockLimit=stockLimit;
+        this.lock = lock;
     }
 
     @Override
@@ -33,14 +35,21 @@ public class Producer extends Thread {
         while (true) {
 
             dataSeed = dataSeed + rand.nextInt(100);
-            System.out.println("Producer added " + dataSeed);
+            //System.out.println("Producer added " + dataSeed);
             queue.add(dataSeed);
+
+            synchronized(lock){
+                lock.notifyAll();
+            }
             
+            System.out.println(queue.toString());
+
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(Producer.class.getName()).log(Level.SEVERE, null, ex);
             }
+
 
         }
     }
