@@ -5,13 +5,14 @@
  */
 package edu.eci.blacklistvalidator;
 
-import edu.eci.spamkeywordsdatasource.HostBlacklistsDataSourceFacade;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import edu.eci.spamkeywordsdatasource.HostBlacklistsDataSourceFacade;
 
 /**
  *
@@ -20,7 +21,7 @@ import java.util.logging.Logger;
 public class HostBlackListsValidator {
     HostBlacklistsDataSourceFacade skds=HostBlacklistsDataSourceFacade.getInstance();
     private static final int BLACK_LIST_ALARM_COUNT=5;
-    private int globalCount = 0;
+    private final AtomicInteger globalCount = new AtomicInteger(0);
     private boolean running;
     private boolean trustworthy;
 
@@ -36,43 +37,23 @@ public class HostBlackListsValidator {
             thread.start();
             threads.add(thread);
         }
-
-        int ocurrencesCount = 0;
+        
         int checkedListsCount = 0;
-        // for(HostBlackListsValidatorThreads i: threads){
-        //     //try {
-        //         //i.join();
-        //         blackListOcurrences.addAll(i.getBlackListOcurrences());
-        //         ocurrencesCount += i.getOcurrences();
-        //         checkedListsCount += i.getCheckedListsCount();
-        //     // } catch (InterruptedException e) {
-        //     //     e.printStackTrace();
-        //     //}
-        // }
-
         while(running){
             for(HostBlackListsValidatorThreads i: threads){
-                synchronized(partesRango){
-                    globalCount += i.getOcurrences();
-                }
+                    globalCount.addAndGet(i.getOcurrences());
             }
 
-            if (globalCount>=BLACK_LIST_ALARM_COUNT){
+            if (globalCount.get()>=BLACK_LIST_ALARM_COUNT){
                 running=false;
                 trustworthy = false;
             }
-
-
         }
 
         for(HostBlackListsValidatorThreads i: threads){
-            synchronized(partesRango){
                 checkedListsCount += i.getCheckedListsCount();
                 blackListOcurrences.addAll(i.getBlackListOcurrences());
-            }
-            
         }
-        
         if(trustworthy){
             skds.reportAsTrustworthy(ipaddress);
         }

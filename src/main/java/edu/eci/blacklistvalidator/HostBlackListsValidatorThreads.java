@@ -2,6 +2,7 @@ package edu.eci.blacklistvalidator;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import edu.eci.spamkeywordsdatasource.HostBlacklistsDataSourceFacade;
 
@@ -12,18 +13,16 @@ public class HostBlackListsValidatorThreads extends Thread {
     private String ipaddress;
     private int start;
     private int end;
-    private LinkedList<Integer> blackListOcurrences;
-    private int globalCount;
-    private Object lock;
+    private final LinkedList<Integer> blackListOcurrences;
+    private AtomicInteger globalCount = new AtomicInteger(0);
 
-    public HostBlackListsValidatorThreads(String ipaddress, int start, int end, int globalCount){
+    public HostBlackListsValidatorThreads(String ipaddress, int start, int end, AtomicInteger globalCount){
         this.ipaddress = ipaddress;
         this.start = start;
         this.end = end;
         this.ocurrences = 0;
         blackListOcurrences=new LinkedList<>();
         this.globalCount = globalCount;
-        this.lock = new Object();
     }
 
     public void run(){
@@ -35,12 +34,9 @@ public class HostBlackListsValidatorThreads extends Thread {
         for (int i=start;i<end;i++){
             checkedListsCount += 1;
             if (skds.isInBlackListServer(i, ipaddress)){
-                synchronized(lock){
-                    globalCount++;
-                }
-                System.out.println(globalCount);
+                //System.out.println(globalCount);
                 blackListOcurrences.add(i);
-                ocurrences++;
+                globalCount.incrementAndGet();
             }
         }
     }

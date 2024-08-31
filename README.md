@@ -26,8 +26,11 @@ Control de hilos con wait/notify. Productor/consumidor.
 
 3. Haga que ahora el productor produzca muy rápido, y el consumidor consuma lento. Teniendo en cuenta que el productor conoce un límite de Stock (cuantos elementos debería tener, a lo sumo en la cola), haga que dicho límite se respete. Revise el API de la colección usada como cola para ver cómo garantizar que dicho límite no se supere. Verifique que, al poner un límite pequeño para el 'stock', no haya consumo alto de CPU ni errores.
 
+![](consumer.png)
+![](producer.png)
+![](starting.png)
 
-
+**Respuesta:** Guiados por la pista que se encontraba en el main de usar una LinkedBlockingQueue, decidimos cambiar toda la implementación hecha en el punto anterior y enfocarla en base el uso de ColasEnlazadas, las cuales en sus metodos para manejarlas ellas mismas controlan la concurrencia del programa, por ende el productor y el consumidor no entran al mismo tiempo a la cola. Ademas de eso implementamos un limite para la cola, el consiste en que no pueda tener mas de 10 elementos, de esta forma controlamos el flujo con el que ingresan y salen datos, ademas de un sleep, para disminuir la intensidad del consumer al agarrar un valor.
 
 ##### Parte II. – Antes de terminar la clase.
 
@@ -35,6 +38,13 @@ Teniendo en cuenta los conceptos vistos de condición de carrera y sincronizaci�
 
 - La búsqueda distribuida se detenga (deje de buscar en las listas negras restantes) y retorne la respuesta apenas, en su conjunto, los hilos hayan detectado el número de ocurrencias requerido que determina si un host es confiable o no (_BLACK_LIST_ALARM_COUNT_).
 - Lo anterior, garantizando que no se den condiciones de carrera.
+
+![](parte2main.png)
+![](variableatomica.png)
+![](Blacklist.png)
+
+**Respuesta:** Con la ayuda de una variable atomica, en este caso un contador global que fuera sumando la ocurrencias encontradas por los hilos de 1 en 1, logramos que estos se comunicaran entre si, sin ocasionar posible condiciones carrera debido a que la misma variable maneja la ocurrencia del programa. 
+De esta forma se optimiza para que no tenga que recorrer las 80 mil listas, si no termine cuando encuentra 5 coincidencias con la ip.
 
 ##### Parte III. – Avance para el martes, antes de clase.
 
