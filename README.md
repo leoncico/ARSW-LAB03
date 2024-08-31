@@ -19,6 +19,7 @@ Control de hilos con wait/notify. Productor/consumidor.
 
 ![](graficoOptimizado.png)
 
+**Respuesta:** Ahora el consumo de la CPU, se disminuyo a menor del 1%, con ayuda de que ahora quitamos la verificación del if y ahora manejamos el ingreso a la cola de los dos hilos con un wait y un notify. De manera que cuando la cola este vacia, el hilo de consumer tenga que esperar y que cuando el hilo producer agregue a la cola este notifique al consumer para activarlo nuevamente.
 
 3. Haga que ahora el productor produzca muy rápido, y el consumidor consuma lento. Teniendo en cuenta que el productor conoce un límite de Stock (cuantos elementos debería tener, a lo sumo en la cola), haga que dicho límite se respete. Revise el API de la colección usada como cola para ver cómo garantizar que dicho límite no se supere. Verifique que, al poner un límite pequeño para el 'stock', no haya consumo alto de CPU ni errores.
 

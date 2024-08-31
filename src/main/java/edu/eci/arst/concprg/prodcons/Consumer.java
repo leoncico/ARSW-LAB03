@@ -5,8 +5,6 @@
  */
 package edu.eci.arst.concprg.prodcons;
 
-import java.util.Queue;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -39,17 +37,16 @@ public class Consumer extends Thread{
             //     }
                                             
             // }
-            System.out.println("Consumer consumes "+elem);  
             //synchronized(lock){
                 elem=queue.poll();
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }      
-            //}
-            System.out.println("Consumer consumes "+elem);    
+           //}
+            //System.out.println("Consumer consumes "+elem);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }          
         }
     }
 }

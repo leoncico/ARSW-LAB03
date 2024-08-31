@@ -5,12 +5,8 @@
  */
 package edu.eci.arst.concprg.prodcons;
 
-import java.util.Queue;
 import java.util.Random;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -37,7 +33,7 @@ public class Producer extends Thread {
         while (true) {
 
             dataSeed = dataSeed + rand.nextInt(100);
-            System.out.println("Producer added " + dataSeed);
+            //System.out.println("Producer added " + dataSeed);
             synchronized(lock){
                 //lock.notifyAll();
                 try {
@@ -51,9 +47,9 @@ public class Producer extends Thread {
             System.out.println(queue.toString());
 
             // try {
-            //     Thread.sleep(1000);
+            //      Thread.sleep(0);
             // } catch (InterruptedException ex) {
-            //     Logger.getLogger(Producer.class.getName()).log(Level.SEVERE, null, ex);
+            //      Logger.getLogger(Producer.class.getName()).log(Level.SEVERE, null, ex);
             // }
 
 
