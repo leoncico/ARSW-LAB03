@@ -30,7 +30,7 @@ public class Consumer extends Thread{
             if (!queue.isEmpty()) {
                 elem=queue.poll();
            }
-            //System.out.println("Consumer consumes "+elem);
+            System.out.println("Consumer consumes "+elem);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {

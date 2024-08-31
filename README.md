@@ -61,11 +61,26 @@ Sincronización y Dead-Locks.
 
 2. Revise el código e identifique cómo se implemento la funcionalidad antes indicada. Dada la intención del juego, un invariante debería ser que la sumatoria de los puntos de vida de todos los jugadores siempre sea el mismo(claro está, en un instante de tiempo en el que no esté en proceso una operación de incremento/reducción de tiempo). Para este caso, para N jugadores, cual debería ser este valor?.
 
+**Respuesta:** Debido todos los jugadores iniciamente tienen definido 100 de vida, el valor de la sumatoria deberia ser  la multiplicación de los N jugadores por la vida que tienen estos, de esta forma obtendriamos el total. Sin embargo, si llegaramos a hacer una ejecución del programa. Esta va a cambiar pues ahora seria la sumatoria de las vidas de todos los jugadores en un instante de tiempo.
+
 3. Ejecute la aplicación y verifique cómo funcionan las opción ‘pause and check’. Se cumple el invariante?.
+
+**Respuesta:** En este caso no sé mantiene el invariante de la vida, pues cuando damos pause and check este realiza la suma de los 3 jugadores y nos arroja el total, sin embargo, esta suma la realiza sin tener en cuenta que los hilos esten pausados en donde al mismo tiempo que se realiza la suma la vida de los jugadores se ve modificada. Por lo que no habria nunca un instante de tiempo donde los valores sean el mismo.
 
 4. Una primera hipótesis para que se presente la condición de carrera para dicha función (pause and check), es que el programa consulta la lista cuyos valores va a imprimir, a la vez que otros hilos modifican sus valores. Para corregir esto, haga lo que sea necesario para que efectivamente, antes de imprimir los resultados actuales, se pausen todos los demás hilos. Adicionalmente, implemente la opción ‘resume’.
 
+![](nuevoRun.png)
+![](metodosPauseActive.png)
+![](pausarReundar.png)
+
+**Respuesta:** Con esta nueva implementación logramos parar los hilos al momento de presionar el boton "Pause And check" de forma que estos se encuentren detenidos antes de realizar la suma y tambien el botón "Resume" para notificarles a los hilos que pueden seguir con su ejecución.
+
 5. Verifique nuevamente el funcionamiento (haga clic muchas veces en el botón). Se cumple o no el invariante?.
+
+![](PruebaJuego.png)
+
+**Respuesta:** Ahora con la nueva implementación se cumple el invariante, pues los hilos se detienen antes de realizar la sumatoria, por ende siempre vamos a obtener la vida mas reciente de los inmortales.
+
 
 6. Identifique posibles regiones críticas en lo que respecta a la pelea de los inmortales. Implemente una estrategia de bloqueo que evite las condiciones de carrera. Recuerde que si usted requiere usar dos o más ‘locks’ simultáneamente, puede usar bloques sincronizados anidados:
 
