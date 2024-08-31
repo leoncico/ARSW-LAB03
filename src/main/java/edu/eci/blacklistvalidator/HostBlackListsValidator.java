@@ -20,37 +20,67 @@ import java.util.logging.Logger;
 public class HostBlackListsValidator {
     HostBlacklistsDataSourceFacade skds=HostBlacklistsDataSourceFacade.getInstance();
     private static final int BLACK_LIST_ALARM_COUNT=5;
+    private int globalCount = 0;
+    private boolean running;
+    private boolean trustworthy;
 
     public List<Integer> checkHost(String ipaddress, int numberThreads){
         LinkedList<Integer> blackListOcurrences=new LinkedList<Integer>();
         int[] partesRango = getRanges(numberThreads);
         ArrayList<HostBlackListsValidatorThreads> threads = new ArrayList<HostBlackListsValidatorThreads>();
+        running = true;
+        trustworthy = true;
+
         for(int i=0; i<numberThreads; i++){
-            HostBlackListsValidatorThreads thread = new HostBlackListsValidatorThreads(ipaddress, partesRango[i], partesRango[i+1]);
+            HostBlackListsValidatorThreads thread = new HostBlackListsValidatorThreads(ipaddress, partesRango[i], partesRango[i+1], globalCount);
             thread.start();
             threads.add(thread);
         }
 
         int ocurrencesCount = 0;
         int checkedListsCount = 0;
-        for(HostBlackListsValidatorThreads i: threads){
-            try {
-                i.join();
-                blackListOcurrences.addAll(i.getBlackListOcurrences());
-                ocurrencesCount += i.getOcurrences();
-                checkedListsCount += i.getCheckedListsCount();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        // for(HostBlackListsValidatorThreads i: threads){
+        //     //try {
+        //         //i.join();
+        //         blackListOcurrences.addAll(i.getBlackListOcurrences());
+        //         ocurrencesCount += i.getOcurrences();
+        //         checkedListsCount += i.getCheckedListsCount();
+        //     // } catch (InterruptedException e) {
+        //     //     e.printStackTrace();
+        //     //}
+        // }
+
+        while(running){
+            for(HostBlackListsValidatorThreads i: threads){
+                synchronized(partesRango){
+                    globalCount += i.getOcurrences();
+                }
             }
+
+            if (globalCount>=BLACK_LIST_ALARM_COUNT){
+                running=false;
+                trustworthy = false;
+            }
+
+
         }
 
-        if (ocurrencesCount>=BLACK_LIST_ALARM_COUNT){
-            skds.reportAsNotTrustworthy(ipaddress);
+        for(HostBlackListsValidatorThreads i: threads){
+            synchronized(partesRango){
+                checkedListsCount += i.getCheckedListsCount();
+                blackListOcurrences.addAll(i.getBlackListOcurrences());
+            }
+            
         }
-        else{
+        
+        if(trustworthy){
             skds.reportAsTrustworthy(ipaddress);
         }
-     
+        else{
+            skds.reportAsNotTrustworthy(ipaddress);
+        }
+
+        
         LOG.log(Level.INFO, "Checked Black Lists:{0} of {1}", new Object[]{checkedListsCount, skds.getRegisteredServersCount()});
         return blackListOcurrences;
     }

@@ -13,13 +13,17 @@ public class HostBlackListsValidatorThreads extends Thread {
     private int start;
     private int end;
     private LinkedList<Integer> blackListOcurrences;
+    private int globalCount;
+    private Object lock;
 
-    public HostBlackListsValidatorThreads(String ipaddress, int start, int end){
+    public HostBlackListsValidatorThreads(String ipaddress, int start, int end, int globalCount){
         this.ipaddress = ipaddress;
         this.start = start;
         this.end = end;
         this.ocurrences = 0;
         blackListOcurrences=new LinkedList<>();
+        this.globalCount = globalCount;
+        this.lock = new Object();
     }
 
     public void run(){
@@ -31,6 +35,10 @@ public class HostBlackListsValidatorThreads extends Thread {
         for (int i=start;i<end;i++){
             checkedListsCount += 1;
             if (skds.isInBlackListServer(i, ipaddress)){
+                synchronized(lock){
+                    globalCount++;
+                }
+                System.out.println(globalCount);
                 blackListOcurrences.add(i);
                 ocurrences++;
             }
@@ -42,7 +50,9 @@ public class HostBlackListsValidatorThreads extends Thread {
     }
 
     public int getOcurrences(){
-        return ocurrences;
+        int actualOcurrences = ocurrences;
+        ocurrences = 0;
+        return actualOcurrences;
     }
 
     public int getCheckedListsCount(){
