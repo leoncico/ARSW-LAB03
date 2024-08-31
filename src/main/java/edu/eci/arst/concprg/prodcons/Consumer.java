@@ -27,24 +27,13 @@ public class Consumer extends Thread{
     public void run() {
         while (true) {
 
-            // if (queue.isEmpty()) {
-            //     try {
-            //         synchronized(lock){
-            //             lock.wait();
-            //         }
-            //     } catch (InterruptedException e) {
-            //         e.printStackTrace();
-            //     }
-                                            
-            // }
-            //synchronized(lock){
+            if (!queue.isEmpty()) {
                 elem=queue.poll();
-           //}
+           }
             //System.out.println("Consumer consumes "+elem);
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }          
         }
