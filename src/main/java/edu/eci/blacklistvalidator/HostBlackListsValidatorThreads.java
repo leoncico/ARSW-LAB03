@@ -34,7 +34,6 @@ public class HostBlackListsValidatorThreads extends Thread {
         for (int i=start;i<end;i++){
             checkedListsCount += 1;
             if (skds.isInBlackListServer(i, ipaddress)){
-                //System.out.println(globalCount);
                 blackListOcurrences.add(i);
                 globalCount.incrementAndGet();
             }

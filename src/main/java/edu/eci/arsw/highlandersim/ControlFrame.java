@@ -96,6 +96,7 @@ public class ControlFrame extends JFrame {
                 for(Immortal i: immortals){
                     i.pauseMethod();
                 }
+                
 
                 int sum = 0;
                 for (Immortal im : immortals) {
@@ -103,6 +104,7 @@ public class ControlFrame extends JFrame {
                 }
                 statisticsLabel.setText("<html>"+immortals.toString()+"<br>Health sum:"+ sum);
                 
+            
             }
         });
         toolBar.add(btnPauseAndCheck);
