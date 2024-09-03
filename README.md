@@ -11,24 +11,24 @@ Control de hilos con wait/notify. Productor/consumidor.
 
 1. Revise el funcionamiento del programa y ejecútelo. Mientras esto ocurren, ejecute jVisualVM y revise el consumo de CPU del proceso correspondiente. A qué se debe este consumo?, cual es la clase responsable?
 
-![](grafico.png)
+![](img/grafico.png)
 
 **Respuesta:** Consume mas CPU en la clase consumer debido a que esta haciendo una verificación if permanentemente, donde le pregunta si el tamaño de la lista es mayor a cero. Este consumo actualmente esta variando entre el 5% al 8% de uso.
 
 2. Haga los ajustes necesarios para que la solución use más eficientemente la CPU, teniendo en cuenta que -por ahora- la producción es lenta y el consumo es rápido. Verifique con JVisualVM que el consumo de CPU se reduzca.
 
-![](graficoOptimizado.png)
-![](parte2Antes.png)
-![](parte2AntesPro.png)
-![](parte2main.png)
+![](img/graficoOptimizado.png)
+![](img/parte2Antes.png)
+![](img/parte2AntesPro.png)
+![](img/parte2main.png)
 
 **Respuesta:** Ahora el consumo de la CPU, se disminuyo a menor del 1%, con ayuda de que ahora quitamos la verificación del if y ahora manejamos el ingreso a la cola de los dos hilos con un wait y un notify. De manera que cuando la cola este vacia, el hilo de consumer tenga que esperar y que cuando el hilo producer agregue a la cola este notifique al consumer para activarlo nuevamente.
 
 3. Haga que ahora el productor produzca muy rápido, y el consumidor consuma lento. Teniendo en cuenta que el productor conoce un límite de Stock (cuantos elementos debería tener, a lo sumo en la cola), haga que dicho límite se respete. Revise el API de la colección usada como cola para ver cómo garantizar que dicho límite no se supere. Verifique que, al poner un límite pequeño para el 'stock', no haya consumo alto de CPU ni errores.
 
-![](consumer.png)
-![](producer.png)
-![](starting.png)
+![](img/consumer.png)
+![](img/producer.png)
+![](img/starting.png)
 
 **Respuesta:** Guiados por la pista que se encontraba en el main de usar una LinkedBlockingQueue, decidimos cambiar toda la implementación hecha en el punto anterior y enfocarla en base el uso de ColasEnlazadas, las cuales en sus metodos para manejarlas ellas mismas controlan la concurrencia del programa, por ende el productor y el consumidor no entran al mismo tiempo a la cola. Ademas de eso implementamos un limite para la cola, este consiste en que no pueda tener mas de 10 elementos, de esta forma controlamos el flujo con el que ingresan y salen datos, ademas de un sleep, para disminuir la intensidad del consumer al eleminiar un valor de la cola.
 
@@ -39,8 +39,8 @@ Teniendo en cuenta los conceptos vistos de condición de carrera y sincronizaci�
 - La búsqueda distribuida se detenga (deje de buscar en las listas negras restantes) y retorne la respuesta apenas, en su conjunto, los hilos hayan detectado el número de ocurrencias requerido que determina si un host es confiable o no (_BLACK_LIST_ALARM_COUNT_).
 - Lo anterior, garantizando que no se den condiciones de carrera.
 
-![](variableatomica.png)
-![](Blacklist.png)
+![](img/variableatomica.png)
+![](img/Blacklist.png)
 
 **Respuesta:** Con la ayuda de una variable atomica, en este caso un contador global que fuera sumando la ocurrencias encontradas por los hilos de 1 en 1, logramos que estos se comunicaran entre si, sin ocasionar posible condiciones carrera debido a que la misma variable maneja la ocurrencia del programa. 
 De esta forma se optimiza para que no tenga que recorrer las 80 mil listas, si no termine cuando encuentra 5 coincidencias con la ip.
@@ -78,7 +78,7 @@ Sincronización y Dead-Locks.
 
 5. Verifique nuevamente el funcionamiento (haga clic muchas veces en el botón). Se cumple o no el invariante?.
 
-![](PruebaJuego.png)
+![](img/PruebaJuego.png)
 ![](img/immortal4.PNG)
 
 **Respuesta:** No se cumple el invariante ya que aún siguen presentes las condiciones
@@ -100,8 +100,8 @@ de carrera.
 
 7. Tras implementar su estrategia, ponga a correr su programa, y ponga atención a si éste se llega a detener. Si es así, use los programas jps y jstack para identificar por qué el programa se detuvo.
 
-![](img/immortal6.PNG)
-![](img/immortal7.PNG)
+	![](img/immortal6.png)
+	![](img/immortal7.png)
 
 **Respuesta:**  Debido a que ahora ocasionamos un deadlock, el programa se queda detenido, verificando con ayuda de jstack podemos ver que el deadlock se ocasiono entre los 3 inmortales que tenemos en la ejecución, debido estan en espera entre sí a que liberen el bloqueo.
 
