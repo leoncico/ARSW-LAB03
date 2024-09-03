@@ -96,16 +96,28 @@ de carrera.
 
 ![](img/immortal5.PNG)
 
+**Respuesta:** En este caso guiados por el laboratorio, implementamos la estrategia de los locks anidados en el metodo fight.
+
 7. Tras implementar su estrategia, ponga a correr su programa, y ponga atención a si éste se llega a detener. Si es así, use los programas jps y jstack para identificar por qué el programa se detuvo.
 
 ![](img/immortal6.PNG)
 ![](img/immortal7.PNG)
 
+**Respuesta:**  Debido a que ahora ocasionamos un deadlock, el programa se queda detenido, verificando con ayuda de jstack podemos ver que el deadlock se ocasiono entre los 3 inmortales que tenemos en la ejecución, debido estan en espera entre sí a que liberen el bloqueo.
+
 8. Plantee una estrategia para corregir el problema antes identificado (puede revisar de nuevo las páginas 206 y 207 de _Java Concurrency in Practice_).
 
-** Respuesta: Bloqueos ordenados
+![](img/immortal8.PNG)
+![](img/immortal9.jpg)
+
+**Respuesta:** Para este caso seguimos una de las estrategias para evitar un deadlock, que es darle un orden a su ejecución, para ello fue necesario modificar el metodo fight, para ello fue necesario usar como parametros los 2 inmortales que van a luchar y no solo uno como se tenia inicialmente. Con esto tambien solucionamos una condición carrera con respecto a que la sumatoria de la vida no era siempre N*100, por lo que ahora si se cumple este invariante.
 
 9. Una vez corregido el problema, rectifique que el programa siga funcionando de manera consistente cuando se ejecutan 100, 1000 o 10000 inmortales. Si en estos casos grandes se empieza a incumplir de nuevo el invariante, debe analizar lo realizado en el paso 4.
+
+![](img/inmortal10.png)
+![](img/inmortal11.png)
+
+**Respuesta:**  Realizamos las ejecuciones para 100 inmortales y para 1000 inmortales, en este caso vemos que el invariante se sigue cumpliendo. Para el caso de 10000 inmortales es imposible realizar esta ejecución ahora pues es demasiada la información que arroja el programa la cual nuestras computadoras no soportan.
 
 10.  Un elemento molesto para la simulación es que en cierto punto de la misma hay pocos 'inmortales' vivos realizando peleas fallidas con 'inmortales' ya muertos. Es necesario ir suprimiendo los inmortales muertos de la simulación a medida que van muriendo. Para esto:
 	* Analizando el esquema de funcionamiento de la simulación, esto podría crear una condición de carrera? Implemente la funcionalidad, ejecute la simulación y observe qué problema se presenta cuando hay muchos 'inmortales' en la misma. Escriba sus conclusiones al respecto en el archivo RESPUESTAS.txt.
