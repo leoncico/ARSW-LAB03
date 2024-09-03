@@ -82,7 +82,7 @@ public class ControlFrame extends JFrame {
                 }
 
                 btnStart.setEnabled(false);
-
+                
             }
         });
         toolBar.add(btnStart);
@@ -134,6 +134,17 @@ public class ControlFrame extends JFrame {
 
         JButton btnStop = new JButton("STOP");
         btnStop.setForeground(Color.RED);
+        btnStop.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                for(Immortal i: immortals){
+                    i.stopMethod();
+                }
+                output.setText("");
+                btnStart.setEnabled(true);
+
+
+            }
+        });
         toolBar.add(btnStop);
 
         scrollPane = new JScrollPane();
@@ -150,7 +161,7 @@ public class ControlFrame extends JFrame {
     }
 
     public List<Immortal> setupInmortals() {
-
+        
         ImmortalUpdateReportCallback ucb=new TextAreaUpdateReportCallback(output,scrollPane);
         
         try {

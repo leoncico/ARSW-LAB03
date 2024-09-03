@@ -18,6 +18,7 @@ public class Immortal extends Thread {
     private final Random r = new Random(System.currentTimeMillis());
 
     private boolean pausedGame= false;
+    private boolean running=true;
     private final Object lockA;
     private final Object lockB;
 
@@ -34,7 +35,7 @@ public class Immortal extends Thread {
 
     public void run() {
 
-        while (true) {
+        while (running) {
                 while(pausedGame){
                     synchronized (lockA) {
                         try {
@@ -57,7 +58,7 @@ public class Immortal extends Thread {
             fight(this, im);
 
             try {
-                Thread.sleep(1);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -117,5 +118,9 @@ public class Immortal extends Thread {
             pausedGame=false;
             lockA.notify();
         }
+    }
+
+    public void stopMethod(){
+        running=false;
     }
 }
