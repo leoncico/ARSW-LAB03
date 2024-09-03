@@ -15,7 +15,7 @@ Control de hilos con wait/notify. Productor/consumidor.
 
 **Respuesta:** Consume mas CPU en la clase consumer debido a que esta haciendo una verificación if permanentemente, donde le pregunta si el tamaño de la lista es mayor a cero. Este consumo actualmente esta variando entre el 5% al 8% de uso.
 
-1. Haga los ajustes necesarios para que la solución use más eficientemente la CPU, teniendo en cuenta que -por ahora- la producción es lenta y el consumo es rápido. Verifique con JVisualVM que el consumo de CPU se reduzca.
+2. Haga los ajustes necesarios para que la solución use más eficientemente la CPU, teniendo en cuenta que -por ahora- la producción es lenta y el consumo es rápido. Verifique con JVisualVM que el consumo de CPU se reduzca.
 
 ![](graficoOptimizado.png)
 ![](parte2Antes.png)
@@ -62,13 +62,13 @@ Sincronización y Dead-Locks.
 
 **Respuesta:** Debido todos los jugadores iniciamente tienen definido 100 de vida, el valor de la sumatoria deberia ser la multiplicación de los N jugadores por la vida que tienen estos, de esta forma obtendriamos el invariante. 
 
-> Invariante = N * 100
+ Invariante = N * 100
 
-1. Ejecute la aplicación y verifique cómo funcionan las opción ‘pause and check’. Se cumple el invariante?.
+3. Ejecute la aplicación y verifique cómo funcionan las opción ‘pause and check’. Se cumple el invariante?.
 
 **Respuesta:** En este caso no se mantiene el invariante de la vida, pues cuando damos pause and check este realiza la suma de los de los puntos de cada jugador obteniedo el total, sin embargo, se está dando una condición de carrera al calcular este valor.
 
-1. Una primera hipótesis para que se presente la condición de carrera para dicha función (pause and check), es que el programa consulta la lista cuyos valores va a imprimir, a la vez que otros hilos modifican sus valores. Para corregir esto, haga lo que sea necesario para que efectivamente, antes de imprimir los resultados actuales, se pausen todos los demás hilos. Adicionalmente, implemente la opción ‘resume’.
+4. Una primera hipótesis para que se presente la condición de carrera para dicha función (pause and check), es que el programa consulta la lista cuyos valores va a imprimir, a la vez que otros hilos modifican sus valores. Para corregir esto, haga lo que sea necesario para que efectivamente, antes de imprimir los resultados actuales, se pausen todos los demás hilos. Adicionalmente, implemente la opción ‘resume’.
 
 ![](img/immortal1.PNG)
 ![](img/immortal2.PNG)
@@ -76,7 +76,7 @@ Sincronización y Dead-Locks.
 
 **Respuesta:** Con esta nueva implementación logramos parar los hilos al momento de presionar el boton "Pause And check" de forma que estos se encuentren detenidos antes de realizar la suma y tambien el botón "Resume" para notificarles a los hilos que pueden seguir con su ejecución.
 
-1. Verifique nuevamente el funcionamiento (haga clic muchas veces en el botón). Se cumple o no el invariante?.
+5. Verifique nuevamente el funcionamiento (haga clic muchas veces en el botón). Se cumple o no el invariante?.
 
 ![](PruebaJuego.png)
 ![](img/immortal4.PNG)
@@ -84,7 +84,7 @@ Sincronización y Dead-Locks.
 **Respuesta:** No se cumple el invariante ya que aún siguen presentes las condiciones
 de carrera.
 
-1. Identifique posibles regiones críticas en lo que respecta a la pelea de los inmortales. Implemente una estrategia de bloqueo que evite las condiciones de carrera. Recuerde que si usted requiere usar dos o más ‘locks’ simultáneamente, puede usar bloques sincronizados anidados:
+6. Identifique posibles regiones críticas en lo que respecta a la pelea de los inmortales. Implemente una estrategia de bloqueo que evite las condiciones de carrera. Recuerde que si usted requiere usar dos o más ‘locks’ simultáneamente, puede usar bloques sincronizados anidados:
 
 	```java
 	synchronized(locka){
@@ -94,17 +94,24 @@ de carrera.
 	}
 	```
 
-2. Tras implementar su estrategia, ponga a correr su programa, y ponga atención a si éste se llega a detener. Si es así, use los programas jps y jstack para identificar por qué el programa se detuvo.
+![](img/immortal5.PNG)
 
-3. Plantee una estrategia para corregir el problema antes identificado (puede revisar de nuevo las páginas 206 y 207 de _Java Concurrency in Practice_).
+7. Tras implementar su estrategia, ponga a correr su programa, y ponga atención a si éste se llega a detener. Si es así, use los programas jps y jstack para identificar por qué el programa se detuvo.
 
-4. Una vez corregido el problema, rectifique que el programa siga funcionando de manera consistente cuando se ejecutan 100, 1000 o 10000 inmortales. Si en estos casos grandes se empieza a incumplir de nuevo el invariante, debe analizar lo realizado en el paso 4.
+![](img/immortal6.PNG)
+![](img/immortal7.PNG)
 
-5.  Un elemento molesto para la simulación es que en cierto punto de la misma hay pocos 'inmortales' vivos realizando peleas fallidas con 'inmortales' ya muertos. Es necesario ir suprimiendo los inmortales muertos de la simulación a medida que van muriendo. Para esto:
+8. Plantee una estrategia para corregir el problema antes identificado (puede revisar de nuevo las páginas 206 y 207 de _Java Concurrency in Practice_).
+
+** Respuesta: Bloqueos ordenados
+
+9. Una vez corregido el problema, rectifique que el programa siga funcionando de manera consistente cuando se ejecutan 100, 1000 o 10000 inmortales. Si en estos casos grandes se empieza a incumplir de nuevo el invariante, debe analizar lo realizado en el paso 4.
+
+10.  Un elemento molesto para la simulación es que en cierto punto de la misma hay pocos 'inmortales' vivos realizando peleas fallidas con 'inmortales' ya muertos. Es necesario ir suprimiendo los inmortales muertos de la simulación a medida que van muriendo. Para esto:
 	* Analizando el esquema de funcionamiento de la simulación, esto podría crear una condición de carrera? Implemente la funcionalidad, ejecute la simulación y observe qué problema se presenta cuando hay muchos 'inmortales' en la misma. Escriba sus conclusiones al respecto en el archivo RESPUESTAS.txt.
 	* Corrija el problema anterior __SIN hacer uso de sincronización__, pues volver secuencial el acceso a la lista compartida de inmortales haría extremadamente lenta la simulación.
 
-6.  Para finalizar, implemente la opción STOP.
+11.  Para finalizar, implemente la opción STOP.
 
 <!--
 ### Criterios de evaluación

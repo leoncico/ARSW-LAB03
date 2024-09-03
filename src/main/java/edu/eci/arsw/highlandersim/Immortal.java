@@ -54,7 +54,7 @@ public class Immortal extends Thread {
             }
             im = immortalsPopulation.get(nextFighterIndex);
             
-            this.fight(im);
+            fight(this, im);
 
             try {
                 Thread.sleep(1);
@@ -66,16 +66,27 @@ public class Immortal extends Thread {
 
     }
 
-    public void fight(Immortal i2) {
-        synchronized(this){
-            synchronized(i2){
+    public void fight(Immortal i1, Immortal i2) {
+        Immortal firstThread;
+        Immortal secondThread;
+
+        if (i1.hashCode() < i2.hashCode()) {
+            firstThread = i1;
+            secondThread = i2;
+        } else {
+            firstThread = i2;
+            secondThread = i1;
+        }
+
+        synchronized(firstThread){
+            synchronized(secondThread){
                 if (i2.getHealth() > 0) {
                     i2.changeHealth(i2.getHealth() - defaultDamageValue);
-                    this.health += defaultDamageValue;
-                    updateCallback.processReport("Fight: " + this + " vs " + i2+"\n");
+                    i1.health += defaultDamageValue;
+                    updateCallback.processReport("Fight: " + i1 + " vs " + i2+"\n");
                 }
                 else {
-                    updateCallback.processReport(this + " says:" + i2 + " is already dead!\n");
+                    updateCallback.processReport(i1 + " says:" + i2 + " is already dead!\n");
                 }
             }
         }
