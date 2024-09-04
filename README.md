@@ -120,10 +120,25 @@ de carrera.
 **Respuesta:**  Realizamos las ejecuciones para 100 inmortales y para 1000 inmortales, en este caso vemos que el invariante se sigue cumpliendo. Para el caso de 10000 inmortales es imposible realizar esta ejecución ahora pues es demasiada la información que arroja el programa la cual nuestras computadoras no soportan.
 
 10.  Un elemento molesto para la simulación es que en cierto punto de la misma hay pocos 'inmortales' vivos realizando peleas fallidas con 'inmortales' ya muertos. Es necesario ir suprimiendo los inmortales muertos de la simulación a medida que van muriendo. Para esto:
+
 	* Analizando el esquema de funcionamiento de la simulación, esto podría crear una condición de carrera? Implemente la funcionalidad, ejecute la simulación y observe qué problema se presenta cuando hay muchos 'inmortales' en la misma. Escriba sus conclusiones al respecto en el archivo RESPUESTAS.txt.
+
+	**Respuesta:** Es possible que se produzca una condicion Carrera, debido a que si eliminamos los inmortales a medida que mueren, mientras sigue en ejecución a aplicación, por la rapidez del programa y entre mas inmortales hayan, es posible que el programa intente acceder al mismo indice y remueva otro inmortal que tenga toda su vida. Lo que ocasiona modificaciones al invariante y resultados inesperados.
+
 	* Corrija el problema anterior __SIN hacer uso de sincronización__, pues volver secuencial el acceso a la lista compartida de inmortales haría extremadamente lenta la simulación.
 
+	![](img/inmortal12.png)
+	![](img/inmortal3.PNG)
+	![](img/inmortal4.PNG)
+	
+	**Respuesta:** Con el uso de la coleccion recurrente CopyOnWriteArrayList logramos sin necesidad de sincronización que el codigo se ejecutara sin condiciones carrera o errores raros. Para ellos consistio en colocar una bandera en el metodo fight para cuando el segundo luchador llega su vida a cero de forma que este temrine su ejecución. Para el momento que el jugador le de click al metodo de Pause, el metodo clearlist va a eliminar todos los inmortales cuya vida es cero.
+
 11.  Para finalizar, implemente la opción STOP.
+
+	![](img/stop.png)
+	![](img/stopmethod.png)
+
+	**Respuesta:** Para la ejecución de los hilos con el metodo stop, mientras que en el botón vamos a limpiar la lista, el texto y vamos a habilitar el botón start para una nueva ejecución.
 
 <!--
 ### Criterios de evaluación

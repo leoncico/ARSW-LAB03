@@ -1,7 +1,7 @@
 package edu.eci.arsw.highlandersim;
 
-import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Immortal extends Thread {
 
@@ -11,7 +11,7 @@ public class Immortal extends Thread {
     
     private int defaultDamageValue;
 
-    private final List<Immortal> immortalsPopulation;
+    private final CopyOnWriteArrayList<Immortal> immortalsPopulation;
 
     private final String name;
 
@@ -21,8 +21,9 @@ public class Immortal extends Thread {
     private boolean running=true;
     private final Object lockA;
     private final Object lockB;
+    private boolean isDead = false;
 
-    public Immortal(String name, List<Immortal> immortalsPopulation, int health, int defaultDamageValue, ImmortalUpdateReportCallback ucb,Object lock) {
+    public Immortal(String name, CopyOnWriteArrayList<Immortal> immortalsPopulation, int health, int defaultDamageValue, ImmortalUpdateReportCallback ucb,Object lock) {
         super(name);
         this.updateCallback=ucb;
         this.name = name;
@@ -35,7 +36,7 @@ public class Immortal extends Thread {
 
     public void run() {
 
-        while (running) {
+        while (running && immortalsPopulation.size()>1 && getHealth()>0) {
                 while(pausedGame){
                     synchronized (lockA) {
                         try {
@@ -58,7 +59,7 @@ public class Immortal extends Thread {
             fight(this, im);
 
             try {
-                Thread.sleep(1000);
+                Thread.sleep(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -70,37 +71,46 @@ public class Immortal extends Thread {
     public void fight(Immortal i1, Immortal i2) {
         Immortal firstThread;
         Immortal secondThread;
-
-        if (i1.hashCode() < i2.hashCode()) {
-            firstThread = i1;
-            secondThread = i2;
-        } else {
-            firstThread = i2;
-            secondThread = i1;
-        }
-
-        synchronized(firstThread){
-            synchronized(secondThread){
-                if (i2.getHealth() > 0) {
-                    i2.changeHealth(i2.getHealth() - defaultDamageValue);
-                    i1.health += defaultDamageValue;
-                    updateCallback.processReport("Fight: " + i1 + " vs " + i2+"\n");
+            if (i1.hashCode() < i2.hashCode()) {
+                firstThread = i1;
+                secondThread = i2;
+            } else {
+                firstThread = i2;
+                secondThread = i1;
+            }
+            synchronized(firstThread){
+                synchronized(secondThread){
+                    if (i2.getHealth() > 0) {
+                        i2.changeHealth(i2.getHealth() - defaultDamageValue);
+                        i1.health += defaultDamageValue;
+                        updateCallback.processReport("Fight: " + i1 + " vs " + i2+"\n");
+                    }
+                    else {
+                        if (!i2.isDead) {
+                            i2.markAsDead();
+                            updateCallback.processReport(i1 + " says:" + i2 + " is already dead!\n");
+                        }
+                        
+                    }
                 }
-                else {
-                    updateCallback.processReport(i1 + " says:" + i2 + " is already dead!\n");
-                }
+            }
+    }
+
+    public void clearList(){
+        for(Immortal i: immortalsPopulation){
+            if(i.getHealth()<=0){
+                immortalsPopulation.remove(i);
             }
         }
     }
-
     
-
     public void changeHealth(int v) {
         health = v;
     }
 
     public int getHealth() {
         return health;
+        
     }
 
     @Override
@@ -111,6 +121,9 @@ public class Immortal extends Thread {
 
     public void pauseMethod(){
         pausedGame=true;
+        if(isDead){
+            clearList();
+        }
     }
 
     public void activeImmortal(){
@@ -123,4 +136,10 @@ public class Immortal extends Thread {
     public void stopMethod(){
         running=false;
     }
+
+    public void markAsDead() {
+        isDead = true;
+        running = false;
+    }
+
 }
