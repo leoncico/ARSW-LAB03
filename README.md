@@ -111,7 +111,7 @@ de carrera.
 ![](img/immortal8.PNG)
 ![](img/immortal9.jpg)
 
-**Respuesta:** Para este caso seguimos una de las estrategias para evitar un deadlock, que es darle un orden a su ejecución, para ello fue necesario modificar el metodo fight, para ello fue necesario usar como parametros los 2 inmortales que van a luchar y no solo uno como se tenia inicialmente. Con esto tambien solucionamos una condición carrera con respecto a que la sumatoria de la vida no era siempre N*100, por lo que ahora si se cumple este invariante.
+**Respuesta:** Para este caso seguimos una de las estrategias para evitar un deadlock, que es darle un orden a su ejecución, en este caso seleccionamos la ejecución comparando el valor Hash entre los dos inmortales, adicionalmente fue necesario modificar el metodo fight, por lo cuál deben llegar como parametros los 2 inmortales que van a luchar y no solo uno como se tenia inicialmente. Con esto tambien solucionamos una condición carrera con respecto a que la sumatoria de la vida no era siempre N*100, por lo que ahora si se cumple este invariante.
 
 9. Una vez corregido el problema, rectifique que el programa siga funcionando de manera consistente cuando se ejecutan 100, 1000 o 10000 inmortales. Si en estos casos grandes se empieza a incumplir de nuevo el invariante, debe analizar lo realizado en el paso 4.
 
@@ -124,7 +124,7 @@ de carrera.
 
 	Analizando el esquema de funcionamiento de la simulación, esto podría crear una condición de carrera? Implemente la funcionalidad, ejecute la simulación y observe qué problema se presenta cuando hay muchos 'inmortales' en la misma. Escriba sus conclusiones al respecto en el archivo RESPUESTAS.txt.
 
-	**Respuesta:** Es possible que se produzca una condicion Carrera, debido a que si eliminamos los inmortales a medida que mueren, mientras sigue en ejecución a aplicación, por la rapidez del programa y entre mas inmortales hayan, es posible que el programa intente acceder al mismo indice y remueva otro inmortal que tenga toda su vida. Lo que ocasiona modificaciones al invariante y resultados inesperados.
+	**Respuesta:** Es posible que se produzca una condicion Carrera, debido a que si eliminamos los inmortales a medida que mueren, mientras sigue en ejecución a aplicación, por la rapidez del programa y entre mas inmortales hayan, es posible que el programa intente acceder al mismo indice y remueva otro inmortal que tenga toda su vida. Lo que ocasiona modificaciones al invariante y resultados inesperados.
 
 	Corrija el problema anterior __SIN hacer uso de sincronización__, pues volver secuencial el acceso a la lista compartida de inmortales haría extremadamente lenta la simulación.
 
@@ -132,7 +132,7 @@ de carrera.
 	![](img/inmortal13.png)
 	![](img/inmortal14.PNG)
 	
-	**Respuesta:** Con el uso de la coleccion recurrente CopyOnWriteArrayList logramos sin necesidad de sincronización que el codigo se ejecutara sin condiciones carrera o errores raros. Para ellos consistio en colocar una bandera en el metodo fight para cuando el segundo luchador llega su vida a cero de forma que este temrine su ejecución. Para el momento que el jugador le de click al metodo de Pause, el metodo clearlist va a eliminar todos los inmortales cuya vida es cero.
+	**Respuesta:** Con el uso de la coleccion recurrente CopyOnWriteArrayList logramos sin necesidad de sincronización que el codigo se ejecutara sin condiciones carrera o errores inesperados.La solución consistio en colocar una bandera en el metodo fight para cuando el segundo luchador llega su vida a cero de forma que este temrine su ejecución. Para el momento que el jugador le de click al metodo de Pause, el metodo clearlist va a eliminar todos los inmortales cuya vida es cero.
 
 11. Para finalizar, implemente la opción STOP.
 
